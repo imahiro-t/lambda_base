@@ -9,7 +9,7 @@ The package can be installed by adding `lambda_base` to your list of dependencie
 ```elixir
 def deps do
   [
-    {:lambda_base, "~> 1.0.0"}
+    {:lambda_base, "~> 1.0.1"}
   ]
 end
 ```
@@ -33,7 +33,7 @@ end
 ```
 $ docker run -d -it --name elx erintheblack/elixir-lambda-builder:20200112.01
 $ docker cp ${project} elx:/tmp
-$ docker exec elx /bin/bash -c "cd /tmp/${project}; mix deps.get; mix lambda_release"
+$ docker exec elx /bin/bash -c "cd /tmp/${project}; mix deps.get; mix lambda.release"
 $ docker cp elx:/tmp/${app_name}.zip .
 ```
 

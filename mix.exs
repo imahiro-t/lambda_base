@@ -11,7 +11,12 @@ defmodule LambdaBase.MixProject do
       package: package(),
       build_embedded: Mix.env == :prod,
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+      source_url: "https://github.com/imahiro-t/lambda_base",
+      docs: [
+        main: "readme", # The main page in the docs
+        extras: ["README.md"]
+      ]
     ]
   end
 
