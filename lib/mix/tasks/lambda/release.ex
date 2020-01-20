@@ -1,4 +1,4 @@
-defmodule Mix.Tasks.LambdaRelease do
+defmodule Mix.Tasks.Lambda.Release do
   @moduledoc """
   Create zip file for AWS Lamdba with custom runtime.
 
@@ -11,7 +11,7 @@ defmodule Mix.Tasks.LambdaRelease do
   ```
   $ docker run -d -it --name elx erintheblack/elixir-lambda-builder:20200112.01
   $ docker cp ${project} elx:/tmp
-  $ docker exec elx /bin/bash -c "cd /tmp/${project}; mix deps.get; mix lambda_release"
+  $ docker exec elx /bin/bash -c "cd /tmp/${project}; mix deps.get; mix lambda.release"
   $ docker cp elx:/tmp/${app_name}.zip .
   ```
 
