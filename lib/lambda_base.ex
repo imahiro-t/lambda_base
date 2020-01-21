@@ -23,35 +23,35 @@ defmodule LambdaBase do
     end
   end
 
-  def start(implementation) do
+  def start(module) do
     context = System.get_env
     LambdaLogger.start(context |> log_level)
     HTTPoison.start()
-    loop(context, implementation)
+    loop(context, module)
   end
 
   defp log_level(context) do
     context |> Map.get("LOG_LEVEL", "INFO") |> String.downcase |> String.to_atom
   end
 
-  defp loop(context, implementation) do
+  defp loop(context, module) do
     endpoint_uri = context |> next_uri
     case HTTPoison.get(endpoint_uri) do
       {:error, error} ->
         {:error, error.reason}
       {:ok, response} ->
         {_, request_id} = response.headers |> Enum.find(fn {x, _} -> x == "Lambda-Runtime-Aws-Request-Id" end)
-        handle_event(response.body |> Json.decode, context, request_id, implementation)
+        handle_event(response.body |> Json.decode, context, request_id, module)
     end
-    loop(context, implementation)
+    loop(context, module)
   end
 
-  defp handle_event(event, context, request_id, implementation) do
+  defp handle_event(event, context, request_id, module) do
     LambdaLogger.debug(event)
     LambdaLogger.debug(context)
     LambdaLogger.debug(request_id)
     try do
-      case implementation.handle(event, context) do
+      case apply(module, :handle, [event, context]) do
         {:ok, result} ->
           LambdaLogger.debug(result)
           endpoint_uri = context |> response_uri(request_id)

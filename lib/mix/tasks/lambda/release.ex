@@ -23,32 +23,36 @@ defmodule Mix.Tasks.Lambda.Release do
 
   use Mix.Task
 
-  @bootstrap """
-#!/bin/sh
-
-set -euo pipefail
-export HOME=/
-RESPONSE=$(bin/app eval "$(echo "$_HANDLER").start()")
-"""
-
   @doc """
   Create zip file for AWS Lamdba with custom runtime.
   """
   @impl Mix.Task
   def run(_args) do
-    app_name = Mix.Project.config |> Keyword.get(:app) |> to_string
+    app_name = app_name()
+    bootstrap = bootstrap(app_name)
     Mix.env(:prod)
     Mix.Shell.cmd("rm -f -R ./_build/prod/*", &IO.puts/1)
     Mix.Task.run("release")
-    File.write("./_build/prod/rel/#{app_name}/bootstrap", @bootstrap)
-    Mix.Shell.cmd("mv ./_build/prod/rel/#{app_name}/bin/#{app_name} ./_build/prod/rel/#{app_name}/bin/app", &IO.puts/1)
-    Mix.Shell.cmd("rm -f ./_build/prod/rel/#{app_name}/bin/#{app_name}.bat", &IO.puts/1)
-    Mix.Shell.cmd("chmod +x ./_build/prod/rel/#{app_name}/bin/app", &IO.puts/1)
+    File.write("./_build/prod/rel/#{app_name}/bootstrap", bootstrap)
+    Mix.Shell.cmd("chmod +x ./_build/prod/rel/#{app_name}/bin/#{app_name}", &IO.puts/1)
     Mix.Shell.cmd("chmod +x ./_build/prod/rel/#{app_name}/releases/*/elixir", &IO.puts/1)
     Mix.Shell.cmd("chmod +x ./_build/prod/rel/#{app_name}/erts-*/bin/erl", &IO.puts/1)
     Mix.Shell.cmd("chmod +x ./_build/prod/rel/#{app_name}/bootstrap", &IO.puts/1)
     Mix.Shell.cmd("cd ./_build/prod/rel/#{app_name}; zip #{app_name} -r -q *", &IO.puts/1)
     Mix.Shell.cmd("mv -f ./_build/prod/rel/#{app_name}/#{app_name}.zip ../", &IO.puts/1)
-    Mix.Shell.cmd("mv ./_build/prod/rel/#{app_name}/bin/app ./_build/prod/rel/#{app_name}/bin/#{app_name}", &IO.puts/1)
+  end
+
+  defp app_name do
+    Mix.Project.config |> Keyword.get(:app) |> to_string
+  end
+
+  defp bootstrap(app_name) do
+    """
+#!/bin/sh
+
+set -euo pipefail
+export HOME=/
+RESPONSE=$(bin/#{app_name} eval "$(echo "$_HANDLER").start()")
+"""
   end
 end
