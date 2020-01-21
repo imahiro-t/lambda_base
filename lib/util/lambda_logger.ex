@@ -24,8 +24,8 @@ defmodule Util.LambdaLogger do
 
   `log_level` must be in `[:debug, :info, :warn, :error]`
   """
-  @spec start(level()) :: on_start()
-  def start(log_level \\ :info) do
+  @spec start_link(level()) :: on_start()
+  def start_link(log_level \\ :info) do
     Agent.start_link(fn -> log_level end, name: __MODULE__)
   end
 

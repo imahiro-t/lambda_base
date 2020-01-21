@@ -4,7 +4,7 @@ defmodule LambdaBase.MixProject do
   def project do
     [
       app: :lambda_base,
-      version: "1.0.2",
+      version: "1.0.3",
       elixir: "~> 1.9",
       name: "LambdaBase",
       description: description(),
@@ -34,7 +34,9 @@ defmodule LambdaBase.MixProject do
 
   # Run "mix help compile.app" to learn about applications.
   def application do
-    []
+    [
+      mod: {LambdaBase.Application, []}
+    ]
   end
 
   # Run "mix help deps" to learn about dependencies.

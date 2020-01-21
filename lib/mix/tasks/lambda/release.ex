@@ -52,7 +52,7 @@ defmodule Mix.Tasks.Lambda.Release do
 
 set -euo pipefail
 export HOME=/
-RESPONSE=$(bin/#{app_name} eval "$(echo "$_HANDLER").start()")
+RESPONSE=$(bin/#{app_name} start)
 """
   end
 end
