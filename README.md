@@ -9,7 +9,14 @@ The package can be installed by adding `lambda_base` to your list of dependencie
 ```elixir
 def deps do
   [
-    {:lambda_base, "~> 1.0.3"}
+    {:lambda_base, "~> 1.0.4"}
+  ]
+end
+
+def project do
+  [
+    boot_mode: :start
+#    boot_mode: :eval
   ]
 end
 ```
