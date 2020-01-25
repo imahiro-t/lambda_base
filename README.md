@@ -12,13 +12,6 @@ def deps do
     {:lambda_base, "~> 1.0.4"}
   ]
 end
-
-def project do
-  [
-    boot_mode: :start
-#    boot_mode: :eval
-  ]
-end
 ```
 
 ## Basic Usage
@@ -47,6 +40,10 @@ $ docker cp elx:/tmp/${app_name}.zip .
 3. Upload zip file and set configuration.
 - Set `Module Name` to `handler`.
 - Set Log level to `environment` -> `LOG_LEVEL`
+  - `debug`, `info`, `warn`, `error`
+- Set boot mode to `environment` -> `BOOT_MODE` (optional)
+  - `eval`, `start`
+  - Default value is `start`
 
 The docs can be found at [https://hexdocs.pm/lambda_base](https://hexdocs.pm/lambda_base).
 
