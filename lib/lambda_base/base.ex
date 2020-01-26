@@ -1,7 +1,7 @@
-defmodule LambdaBase.CommonBase do
+defmodule LambdaBase.Base do
 
-  alias Util.Json
-  alias Util.LambdaLogger
+  alias LambdaBase.Util.Json
+  alias LambdaBase.Util.LambdaLogger
 
   @doc """
   Take log level from context.

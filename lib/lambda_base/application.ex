@@ -2,17 +2,15 @@ defmodule LambdaBase.Application do
 
   use Application
 
-  alias Util.LambdaLogger
-  alias LambdaBase.CommonBase
+  alias LambdaBase.Util.LambdaLogger
 
   def start(_type, _args) do
     context = System.get_env
     children = [
-      {LambdaLogger, context |> CommonBase.log_level}
+      {LambdaLogger, context |> LambdaBase.Base.log_level}
     ]
     Supervisor.start_link(children, strategy: :one_for_all)
-    CommonBase.loop(context)
+    LambdaBase.Base.loop(context)
   end
-
 
 end

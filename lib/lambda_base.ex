@@ -4,8 +4,7 @@ defmodule LambdaBase do
   Use LambdaBase and implement `handle(event, context)` function
   """
 
-  alias Util.LambdaLogger
-  alias LambdaBase.CommonBase
+  alias LambdaBase.Util.LambdaLogger
 
   @doc """
   Lambda runtime call handle function.
@@ -14,14 +13,14 @@ defmodule LambdaBase do
 
   defmacro __using__(_opts) do
     quote do
-      alias Util.Json
-      alias Util.LambdaLogger
+      alias LambdaBase.Util.Json
+      alias LambdaBase.Util.LambdaLogger
       @behaviour LambdaBase
       def start() do
         context = System.get_env
-        LambdaLogger.start_link(context |> CommonBase.log_level)
+        LambdaLogger.start_link(context |> LambdaBase.Base.log_level)
         HTTPoison.start()
-        CommonBase.loop(context)
+        LambdaBase.Base.loop(context)
       end
     end
   end

@@ -1,4 +1,4 @@
-defmodule Util.LambdaLogger do
+defmodule LambdaBase.Util.LambdaLogger do
   @moduledoc """
   A logger for AWS Lambda.
 

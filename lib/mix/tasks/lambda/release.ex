@@ -29,7 +29,8 @@ defmodule Mix.Tasks.Lambda.Release do
   @impl Mix.Task
   def run(_args) do
     app_name = app_name()
-    bootstrap = bootstrap(app_name)
+    boot_mode = boot_mode()
+    bootstrap = bootstrap(app_name, boot_mode)
     Mix.env(:prod)
     Mix.Shell.cmd("rm -f -R ./_build/prod/*", &IO.puts/1)
     Mix.Task.run("release")
@@ -46,18 +47,23 @@ defmodule Mix.Tasks.Lambda.Release do
     Mix.Project.config |> Keyword.get(:app) |> to_string
   end
 
-  defp bootstrap(app_name) do
+  defp boot_mode do
+    Mix.Project.config |> Keyword.get(:boot_mode)
+  end
+
+  defp bootstrap(app_name, boot_mode) do
+    boot_script = if (boot_mode == :app) do
+      "$(bin/#{app_name} start)"
+    else
+      "$(bin/#{app_name} eval \"$(echo \"$_HANDLER\").start()\")"
+    end
 """
 #!/bin/sh
 
 set -euo pipefail
 export HOME=/
-BOOT_MODE="${BOOT_MODE:-start}"
-if [ $BOOT_MODE = "eval" ] || [ $BOOT_MODE = "EVAL" ]; then
-  RESPONSE=$(bin/#{app_name} eval "$(echo "$_HANDLER").start()")
-else
-  RESPONSE=$(bin/#{app_name} start)
-fi
+BOOT_MODE="${BOOT_MODE:-eval}"
+RESPONSE=#{boot_script}
 """
   end
 end

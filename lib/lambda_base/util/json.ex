@@ -1,4 +1,4 @@
-defmodule Util.Json do
+defmodule LambdaBase.Util.Json do
   @moduledoc """
   JSON parser.
   """
@@ -8,7 +8,7 @@ defmodule Util.Json do
 
   ## Examples
 
-      iex> Util.Json.encode(%{"key" => "value"})
+      iex> LambdaBase.Util.Json.encode(%{"key" => "value"})
       "{\\"key\\":\\"value\\"}"
 
   """
@@ -20,7 +20,7 @@ defmodule Util.Json do
 
   ## Examples
 
-      iex> Util.Json.decode("{\\"key\\":\\"b\\"}")
+      iex> LambdaBase.Util.Json.decode("{\\"key\\":\\"b\\"}")
       %{"key" => "value"}
 
   """

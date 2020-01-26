@@ -9,7 +9,23 @@ The package can be installed by adding `lambda_base` to your list of dependencie
 ```elixir
 def deps do
   [
-    {:lambda_base, "~> 1.0.4"}
+    {:lambda_base, "~> 1.0.6"}
+  ]
+end
+```
+
+If you run Lambda as application, you must add below.
+
+```elixir
+def project do
+  [
+    boot_mode: :app
+  ]
+end
+
+def application do
+  [
+    mod: {LambdaBase.Application, []}
   ]
 end
 ```
@@ -41,9 +57,6 @@ $ docker cp elx:/tmp/${app_name}.zip .
 - Set `Module Name` to `handler`.
 - Set Log level to `environment` -> `LOG_LEVEL`
   - `debug`, `info`, `warn`, `error`
-- Set boot mode to `environment` -> `BOOT_MODE` (optional)
-  - `eval`, `start`
-  - Default value is `start`
 
 The docs can be found at [https://hexdocs.pm/lambda_base](https://hexdocs.pm/lambda_base).
 
