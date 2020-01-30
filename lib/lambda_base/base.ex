@@ -82,7 +82,7 @@ defmodule LambdaBase.Base do
 
   defp exception_message(error) do
     %{
-      errorMessage: error,
+      errorMessage: error |> inspect,
       errorType: "Exception"
     }
   end
