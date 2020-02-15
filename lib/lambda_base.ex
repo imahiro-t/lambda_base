@@ -7,6 +7,11 @@ defmodule LambdaBase do
   alias LambdaBase.Util.LambdaLogger
 
   @doc """
+  Lambda runtime call init function.
+  """
+  @callback init(context :: map()) :: {:ok}
+
+  @doc """
   Lambda runtime call handle function.
   """
   @callback handle(event :: map(), context :: map()) :: {:ok, String.t} | {:error, String.t}
@@ -20,6 +25,7 @@ defmodule LambdaBase do
         context = System.get_env
         LambdaLogger.start_link(context |> LambdaBase.Base.log_level)
         HTTPoison.start()
+        init(context)
         LambdaBase.Base.loop(context)
       end
     end

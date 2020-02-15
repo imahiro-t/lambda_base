@@ -9,7 +9,7 @@ The package can be installed by adding `lambda_base` to your list of dependencie
 ```elixir
 def deps do
   [
-    {:lambda_base, "~> 1.0.7"}
+    {:lambda_base, "~> 1.1.0"}
   ]
 end
 ```
@@ -37,6 +37,11 @@ end
 ```elixir
 defmodule UpCase do
   use LambdaBase
+  @impl LambdaBase
+  def init(context) do
+    # call back one time
+    {:ok}
+  end
   @impl LambdaBase
   def handle(event, context) do
     {:ok, event |> Json.encode |> String.upcase}
