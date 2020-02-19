@@ -12,7 +12,7 @@ defmodule Mix.Tasks.Lambda.Release do
   $ docker run -d -it --rm --name elx erintheblack/elixir-lambda-builder:1.10.0
   $ docker cp ${project} elx:/tmp
   $ docker exec elx /bin/bash -c "cd /tmp/${project}; mix deps.get; MIX_ENV=prod mix lambda.release"
-  $ docker cp elx:/tmp/${app_name}.zip .
+  $ docker cp elx:/tmp/${app_name}-${version}.zip .
   ```
 
   ## Lambda setting
