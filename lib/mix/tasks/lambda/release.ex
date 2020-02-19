@@ -9,9 +9,9 @@ defmodule Mix.Tasks.Lambda.Release do
   ## How to build
 
   ```
-  $ docker run -d -it --name elx erintheblack/elixir-lambda-builder:20200112.01
+  $ docker run -d -it --rm --name elx erintheblack/elixir-lambda-builder:1.10.0
   $ docker cp ${project} elx:/tmp
-  $ docker exec elx /bin/bash -c "cd /tmp/${project}; mix deps.get; mix lambda.release"
+  $ docker exec elx /bin/bash -c "cd /tmp/${project}; mix deps.get; MIX_ENV=prod mix lambda.release"
   $ docker cp elx:/tmp/${app_name}.zip .
   ```
 
@@ -29,22 +29,27 @@ defmodule Mix.Tasks.Lambda.Release do
   @impl Mix.Task
   def run(_args) do
     app_name = app_name()
+    version = version()
     boot_mode = boot_mode()
     bootstrap = bootstrap(app_name, boot_mode)
-    Mix.env(:prod)
-    Mix.Shell.cmd("rm -f -R ./_build/prod/*", &IO.puts/1)
-    Mix.Task.run("release")
-    File.write("./_build/prod/rel/#{app_name}/bootstrap", bootstrap)
-    Mix.Shell.cmd("chmod +x ./_build/prod/rel/#{app_name}/bin/#{app_name}", &IO.puts/1)
-    Mix.Shell.cmd("chmod +x ./_build/prod/rel/#{app_name}/releases/*/elixir", &IO.puts/1)
-    Mix.Shell.cmd("chmod +x ./_build/prod/rel/#{app_name}/erts-*/bin/erl", &IO.puts/1)
-    Mix.Shell.cmd("chmod +x ./_build/prod/rel/#{app_name}/bootstrap", &IO.puts/1)
-    Mix.Shell.cmd("cd ./_build/prod/rel/#{app_name}; zip #{app_name} -r -q *", &IO.puts/1)
-    Mix.Shell.cmd("mv -f ./_build/prod/rel/#{app_name}/#{app_name}.zip ../", &IO.puts/1)
+    env = Mix.env
+    Mix.Shell.cmd("rm -f -R ./_build/#{env}/*", &IO.puts/1)
+    Mix.Shell.cmd("MIX_ENV=#{env} mix release", &IO.puts/1)
+    File.write("./_build/#{env}/rel/#{app_name}/bootstrap", bootstrap)
+    Mix.Shell.cmd("chmod +x ./_build/#{env}/rel/#{app_name}/bin/#{app_name}", &IO.puts/1)
+    Mix.Shell.cmd("chmod +x ./_build/#{env}/rel/#{app_name}/releases/*/elixir", &IO.puts/1)
+    Mix.Shell.cmd("chmod +x ./_build/#{env}/rel/#{app_name}/erts-*/bin/erl", &IO.puts/1)
+    Mix.Shell.cmd("chmod +x ./_build/#{env}/rel/#{app_name}/bootstrap", &IO.puts/1)
+    Mix.Shell.cmd("cd ./_build/#{env}/rel/#{app_name}; zip #{app_name}-#{version}.zip -r -q *", &IO.puts/1)
+    Mix.Shell.cmd("mv -f ./_build/#{env}/rel/#{app_name}/#{app_name}-#{version}.zip ../", &IO.puts/1)
   end
 
   defp app_name do
     Mix.Project.config |> Keyword.get(:app) |> to_string
+  end
+
+  defp version do
+    Mix.Project.config |> Keyword.get(:version)
   end
 
   defp boot_mode do

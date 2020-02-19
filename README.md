@@ -9,7 +9,7 @@ The package can be installed by adding `lambda_base` to your list of dependencie
 ```elixir
 def deps do
   [
-    {:lambda_base, "~> 1.1.0"}
+    {:lambda_base, "~> 1.1.1"}
   ]
 end
 ```
@@ -52,9 +52,9 @@ end
 2. Create zip file for AWS Lambda.
 
 ```
-$ docker run -d -it --name elx erintheblack/elixir-lambda-builder:1.10.0
+$ docker run -d -it --rm --name elx erintheblack/elixir-lambda-builder:1.10.0
 $ docker cp ${project} elx:/tmp
-$ docker exec elx /bin/bash -c "cd /tmp/${project}; mix deps.get; mix lambda.release"
+$ docker exec elx /bin/bash -c "cd /tmp/${project}; mix deps.get; MIX_ENV=prod mix lambda.release"
 $ docker cp elx:/tmp/${app_name}.zip .
 ```
 

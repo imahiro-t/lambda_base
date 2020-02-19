@@ -4,12 +4,12 @@ defmodule LambdaBase.MixProject do
   def project do
     [
       app: :lambda_base,
-      version: "1.1.0",
+      version: "1.1.1",
       elixir: "~> 1.9",
       name: "LambdaBase",
       description: description(),
       package: package(),
-      build_embedded: Mix.env == :prod,
+      build_embedded: true,
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       source_url: "https://github.com/imahiro-t/lambda_base",
