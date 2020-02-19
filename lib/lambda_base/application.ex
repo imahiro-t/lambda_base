@@ -7,10 +7,10 @@ defmodule LambdaBase.Application do
   def start(_type, _args) do
     context = System.get_env
     children = [
-      {LambdaLogger, context |> LambdaBase.Base.log_level}
+      {LambdaLogger, context |> LambdaBase.Base.log_level},
+      {LambdaBase.BaseTask, context}
     ]
     Supervisor.start_link(children, strategy: :one_for_all)
-    LambdaBase.Base.loop(context)
   end
 
 end

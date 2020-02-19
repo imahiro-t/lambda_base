@@ -9,7 +9,7 @@ The package can be installed by adding `lambda_base` to your list of dependencie
 ```elixir
 def deps do
   [
-    {:lambda_base, "~> 1.1.1"}
+    {:lambda_base, "~> 1.1.2"}
   ]
 end
 ```
