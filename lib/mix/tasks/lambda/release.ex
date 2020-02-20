@@ -42,6 +42,7 @@ defmodule Mix.Tasks.Lambda.Release do
     Mix.Shell.cmd("chmod +x ./_build/#{env}/rel/#{app_name}/bootstrap", &IO.puts/1)
     Mix.Shell.cmd("cd ./_build/#{env}/rel/#{app_name}; zip #{app_name}-#{version}.zip -r -q *", &IO.puts/1)
     Mix.Shell.cmd("mv -f ./_build/#{env}/rel/#{app_name}/#{app_name}-#{version}.zip ../", &IO.puts/1)
+    Mix.Shell.cmd("cp -a ../#{app_name}-#{version}.zip ../#{app_name}.zip", &IO.puts/1)
   end
 
   defp app_name do

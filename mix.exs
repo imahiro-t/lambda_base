@@ -4,7 +4,7 @@ defmodule LambdaBase.MixProject do
   def project do
     [
       app: :lambda_base,
-      version: "1.1.2",
+      version: "1.1.3",
       elixir: "~> 1.9",
       name: "LambdaBase",
       description: description(),
