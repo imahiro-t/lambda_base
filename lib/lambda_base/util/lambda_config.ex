@@ -23,6 +23,7 @@ defmodule LambdaBase.Util.LambdaConfig do
   @doc """
   Get configration.
   """
+  def get(keys), do: Agent.get(__MODULE__, & &1) |> get(keys)
   def get(nil, _), do: nil
   def get(config, []), do: config
   def get(config, [key | keys]), do: get(config |> Keyword.get(key), keys)
