@@ -15,7 +15,8 @@ defmodule LambdaBase.Util.LambdaConfig do
 
   """
   @spec start_link() :: on_start()
-  def start_link() do
+  def start_link(), do: start_link([])
+  def start_link(_initial_value) do
     config = if (File.exists?(@config_file)), do: Config.Reader.read!(@config_file), else: []
     Agent.start_link(fn -> config end, name: __MODULE__)
   end
