@@ -20,10 +20,12 @@ defmodule LambdaBase do
     quote do
       alias LambdaBase.Util.Json
       alias LambdaBase.Util.LambdaLogger
+      alias LambdaBase.Util.LambdaConfig
       @behaviour LambdaBase
       def start() do
         context = System.get_env
         LambdaLogger.start_link(context |> LambdaBase.Base.log_level)
+        LambdaConfig.start_link()
         HTTPoison.start()
         {:ok, context} = init(context)
         LambdaBase.Base.loop(context)
