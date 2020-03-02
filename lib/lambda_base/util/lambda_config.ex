@@ -8,7 +8,8 @@ defmodule LambdaBase.Util.LambdaConfig do
   use Agent
 
   @type on_start() :: {:ok, pid()} | {:error, {:already_started, pid()} | term()}
-  @config_file "config/release.exs"
+  @external_resource config_file = "../../config/releases.exs"
+  config = if (File.exists?(config_file)), do: Config.Reader.read!(config_file), else: []
 
   @doc """
   Start Config.
@@ -17,8 +18,7 @@ defmodule LambdaBase.Util.LambdaConfig do
   @spec start_link() :: on_start()
   def start_link(), do: start_link([])
   def start_link(_initial_value) do
-    config = if (File.exists?(@config_file)), do: Config.Reader.read!(@config_file), else: []
-    Agent.start_link(fn -> config end, name: __MODULE__)
+    Agent.start_link(fn -> unquote(config) end, name: __MODULE__)
   end
 
   @doc """
