@@ -8,7 +8,7 @@ defmodule LambdaBase.Util.LambdaConfig do
   use Agent
 
   @type on_start() :: {:ok, pid()} | {:error, {:already_started, pid()} | term()}
-  @external_resource config_file = "../../config/release.exs"
+  @external_resource config_file = "../../config/lambda.exs"
   config = if (File.exists?(config_file)), do: Config.Reader.read!(config_file), else: []
 
   @doc """
