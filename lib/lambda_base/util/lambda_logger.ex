@@ -52,7 +52,10 @@ defmodule LambdaBase.Util.LambdaLogger do
   defp log_message(message) when is_binary(message), do: message
   defp log_message(message), do: inspect(message)
 
-  defp log(message), do: IO.puts(:stderr, message)
+  defp log(message) do
+    IO.puts(:stderr, message)
+    message
+  end
 
   defp log_level do
     Agent.get(__MODULE__, & &1)
