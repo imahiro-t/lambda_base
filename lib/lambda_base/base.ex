@@ -15,7 +15,7 @@ defmodule LambdaBase.Base do
   """
   def loop(context) do
     endpoint_uri = context |> next_uri
-    case HTTPoison.get(endpoint_uri) do
+    case HTTPoison.get(endpoint_uri, [], [timeout: :infinity, recv_timeout: :infinity]) do
       {:error, error} ->
         {:error, error.reason}
       {:ok, response} ->
