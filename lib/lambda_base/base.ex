@@ -1,12 +1,11 @@
 defmodule LambdaBase.Base do
 
-  require Logger
+  alias LambdaBase.Util.LambdaLogger
 
   @doc """
   Loop and handle lambdas.
   """
   def loop(context) do
-    Logger.configure(level: context |> Map.get("LOG_LEVEL", "info") |> String.to_atom)
     endpoint_uri = context |> next_uri
     case HTTPoison.get(endpoint_uri, [], [timeout: :infinity, recv_timeout: :infinity]) do
       {:error, error} ->
@@ -24,24 +23,24 @@ defmodule LambdaBase.Base do
   end
 
   defp handle_event(event, context, request_id) do
-    Logger.debug(inspect(event))
-    Logger.debug(inspect(context))
-    Logger.debug(inspect(request_id))
+    LambdaLogger.debug(event)
+    LambdaLogger.debug(context)
+    LambdaLogger.debug(request_id)
     try do
       module = Module.concat([Elixir, context |> handler])
       case apply(module, :handle, [event, context]) do
         {:ok, result} ->
-          Logger.debug(inspect(result))
+          LambdaLogger.debug(result)
           endpoint_uri = context |> response_uri(request_id)
           HTTPoison.post(endpoint_uri, result)
         {:error, error} ->
-          Logger.error(inspect(error))
+          LambdaLogger.error(error)
           endpoint_uri = context |> error_uri(request_id)
           HTTPoison.post(endpoint_uri, error |> error_message |> Jason.encode!)
       end
     rescue
       exception ->
-        Logger.error(inspect(exception))
+        LambdaLogger.error(exception)
         endpoint_uri = context |> error_uri(request_id)
         HTTPoison.post(endpoint_uri, exception |> exception_message |> Jason.encode!)
     end
