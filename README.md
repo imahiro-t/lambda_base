@@ -20,16 +20,6 @@ def deps do
 end
 ```
 
-If you run Lambda on Amazon Linux 2, you must add below.
-
-```elixir
-def project do
-  [
-    custom_runtime: :amazon_linux2
-  ]
-end
-```
-
 ## Basic Usage
 
 1. Create Lambda module. Implement handle(event, context) function.
@@ -51,15 +41,6 @@ end
 
 2. Create zip file for AWS Lambda.
 
-custom runtime on Amazon Linux
-```
-$ docker run -d -it --rm --name elx erintheblack/elixir-lambda-builder:1.10.0
-$ docker cp ${project} elx:/tmp
-$ docker exec elx /bin/bash -c "cd /tmp/${project}; mix deps.get; MIX_ENV=prod mix lambda.release"
-$ docker cp elx:/tmp/${app_name}-${version}.zip .
-```
-
-custom runtime on Amazon Linux 2
 ```
 $ docker run -d -it --rm --name elx erintheblack/elixir-lambda-builder:al2_1.10.4
 $ docker cp ${project} elx:/tmp
