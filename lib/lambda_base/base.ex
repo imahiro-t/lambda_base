@@ -1,19 +1,12 @@
 defmodule LambdaBase.Base do
 
-  alias LambdaBase.Util.Json
-  alias LambdaBase.Util.LambdaLogger
-
-  @doc """
-  Take log level from context.
-  """
-  def log_level(context) do
-    context |> Map.get("LOG_LEVEL", "INFO") |> String.downcase |> String.to_atom
-  end
+  require Logger
 
   @doc """
   Loop and handle lambdas.
   """
   def loop(context) do
+    Logger.configure(level: context |> Map.get("LOG_LEVEL", "info") |> String.to_atom)
     endpoint_uri = context |> next_uri
     case HTTPoison.get(endpoint_uri, [], [timeout: :infinity, recv_timeout: :infinity]) do
       {:error, error} ->
@@ -21,7 +14,7 @@ defmodule LambdaBase.Base do
       {:ok, response} ->
         {_, request_id} = response.headers |> Enum.find(fn {x, _} -> x == "Lambda-Runtime-Aws-Request-Id" end)
         event = try do
-          response.body |> Json.decode
+          response.body |> Jason.decode!
         rescue
           _ -> %{"data" => response.body}
         end
@@ -31,26 +24,26 @@ defmodule LambdaBase.Base do
   end
 
   defp handle_event(event, context, request_id) do
-    LambdaLogger.debug(event)
-    LambdaLogger.debug(context)
-    LambdaLogger.debug(request_id)
+    Logger.debug(inspect(event))
+    Logger.debug(inspect(context))
+    Logger.debug(inspect(request_id))
     try do
       module = Module.concat([Elixir, context |> handler])
       case apply(module, :handle, [event, context]) do
         {:ok, result} ->
-          LambdaLogger.debug(result)
+          Logger.debug(inspect(result))
           endpoint_uri = context |> response_uri(request_id)
           HTTPoison.post(endpoint_uri, result)
         {:error, error} ->
-          LambdaLogger.error(error)
+          Logger.error(inspect(error))
           endpoint_uri = context |> error_uri(request_id)
-          HTTPoison.post(endpoint_uri, error |> error_message |> Json.encode)
+          HTTPoison.post(endpoint_uri, error |> error_message |> Jason.encode!)
       end
     rescue
       exception ->
-        LambdaLogger.error(exception)
+        Logger.error(inspect(exception))
         endpoint_uri = context |> error_uri(request_id)
-        HTTPoison.post(endpoint_uri, exception |> exception_message |> Json.encode)
+        HTTPoison.post(endpoint_uri, exception |> exception_message |> Jason.encode!)
     end
   end
 

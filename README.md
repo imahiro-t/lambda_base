@@ -7,25 +7,15 @@ Base library to create Elixir AWS Lambda
 The package can be installed by adding `lambda_base` to your list of dependencies in `mix.exs`:
 
 ```elixir
-def deps do
-  [
-    {:lambda_base, "~> 1.2.0"}
-  ]
-end
-```
-
-If you run Lambda as application, you must add below.
-
-```elixir
-def project do
-  [
-    boot_mode: :app
-  ]
-end
-
 def application do
   [
     mod: {LambdaBase.Application, []}
+  ]
+end
+
+def deps do
+  [
+    {:lambda_base, "~> 1.3.0"}
   ]
 end
 ```

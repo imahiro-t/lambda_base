@@ -42,7 +42,7 @@ defmodule LambdaBase.MixProject do
     [
       {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
       {:httpoison, "~> 1.7.0"},
-      {:jason, "~> 1.1"}
+      {:jason, "~> 1.2"}
     ]
   end
 end
