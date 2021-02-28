@@ -1,14 +1,6 @@
 defmodule LambdaBase.Base do
 
-  alias LambdaBase.Util.Json
   alias LambdaBase.Util.LambdaLogger
-
-  @doc """
-  Take log level from context.
-  """
-  def log_level(context) do
-    context |> Map.get("LOG_LEVEL", "INFO") |> String.downcase |> String.to_atom
-  end
 
   @doc """
   Loop and handle lambdas.
@@ -21,7 +13,7 @@ defmodule LambdaBase.Base do
       {:ok, response} ->
         {_, request_id} = response.headers |> Enum.find(fn {x, _} -> x == "Lambda-Runtime-Aws-Request-Id" end)
         event = try do
-          response.body |> Json.decode
+          response.body |> Jason.decode!
         rescue
           _ -> %{"data" => response.body}
         end
@@ -44,13 +36,13 @@ defmodule LambdaBase.Base do
         {:error, error} ->
           LambdaLogger.error(error)
           endpoint_uri = context |> error_uri(request_id)
-          HTTPoison.post(endpoint_uri, error |> error_message |> Json.encode)
+          HTTPoison.post(endpoint_uri, error |> error_message |> Jason.encode!)
       end
     rescue
       exception ->
         LambdaLogger.error(exception)
         endpoint_uri = context |> error_uri(request_id)
-        HTTPoison.post(endpoint_uri, exception |> exception_message |> Json.encode)
+        HTTPoison.post(endpoint_uri, exception |> exception_message |> Jason.encode!)
     end
   end
 

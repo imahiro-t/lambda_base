@@ -2,14 +2,14 @@ defmodule Mix.Tasks.Lambda.Release do
   @moduledoc """
   Create zip file for AWS Lamdba with custom runtime.
 
-  Run this task inside Docker image `amazonlinux:2017.03.1.20170812`.
+  Run this task inside Docker image `amazonlinux:2.0.20200722.0`.
 
-  Docker image `erintheblack/elixir-lambda-builder:20200112.01` is prepared to build.
+  Docker image `erintheblack/elixir-lambda-builder:al2_1.10.4` is prepared to build.
 
   ## How to build
 
   ```
-  $ docker run -d -it --rm --name elx erintheblack/elixir-lambda-builder:1.10.0
+  $ docker run -d -it --rm --name elx erintheblack/elixir-lambda-builder:al2_1.10.4
   $ docker cp ${project} elx:/tmp
   $ docker exec elx /bin/bash -c "cd /tmp/${project}; mix deps.get; MIX_ENV=prod mix lambda.release"
   $ docker cp elx:/tmp/${app_name}-${version}.zip .
@@ -30,9 +30,7 @@ defmodule Mix.Tasks.Lambda.Release do
   def run(_args) do
     app_name = app_name()
     version = version()
-    boot_mode = boot_mode()
-    custom_runtime = custom_runtime()
-    bootstrap = bootstrap(app_name, boot_mode)
+    bootstrap = bootstrap(app_name)
     env = Mix.env
     Mix.Shell.cmd("rm -f -R ./_build/#{env}/*", &IO.puts/1)
     Mix.Shell.cmd("MIX_ENV=#{env} mix release", &IO.puts/1)
@@ -41,9 +39,7 @@ defmodule Mix.Tasks.Lambda.Release do
     Mix.Shell.cmd("chmod +x ./_build/#{env}/rel/#{app_name}/releases/*/elixir", &IO.puts/1)
     Mix.Shell.cmd("chmod +x ./_build/#{env}/rel/#{app_name}/erts-*/bin/erl", &IO.puts/1)
     Mix.Shell.cmd("chmod +x ./_build/#{env}/rel/#{app_name}/bootstrap", &IO.puts/1)
-    if custom_runtime == :amazon_linux2 do
-      Mix.Shell.cmd("cp -a /usr/lib64/libtinfo.so.6.0 ./_build/#{env}/rel/#{app_name}/lib/libtinfo.so.6", &IO.puts/1)
-    end
+    Mix.Shell.cmd("cp -a /usr/lib64/libtinfo.so.6.0 ./_build/#{env}/rel/#{app_name}/lib/libtinfo.so.6", &IO.puts/1)
     Mix.Shell.cmd("cd ./_build/#{env}/rel/#{app_name}; zip #{app_name}-#{version}.zip -r -q *", &IO.puts/1)
     Mix.Shell.cmd("mv -f ./_build/#{env}/rel/#{app_name}/#{app_name}-#{version}.zip ../", &IO.puts/1)
     Mix.Shell.cmd("cp -a ../#{app_name}-#{version}.zip ../#{app_name}.zip", &IO.puts/1)
@@ -57,27 +53,13 @@ defmodule Mix.Tasks.Lambda.Release do
     Mix.Project.config |> Keyword.get(:version)
   end
 
-  defp boot_mode do
-    Mix.Project.config |> Keyword.get(:boot_mode)
-  end
-
-  defp custom_runtime do
-    Mix.Project.config |> Keyword.get(:custom_runtime)
-  end
-
-  defp bootstrap(app_name, boot_mode) do
-    boot_script = if (boot_mode == :app) do
-      "$(bin/#{app_name} start)"
-    else
-      "$(bin/#{app_name} eval \"$(echo \"$_HANDLER\").start()\")"
-    end
+  defp bootstrap(app_name) do
 """
 #!/bin/sh
 
 set -euo pipefail
 export HOME=/
-BOOT_MODE="${BOOT_MODE:-eval}"
-RESPONSE=#{boot_script}
+$(bin/#{app_name} start)
 """
   end
 end

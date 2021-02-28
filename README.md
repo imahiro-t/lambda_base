@@ -7,35 +7,15 @@ Base library to create Elixir AWS Lambda
 The package can be installed by adding `lambda_base` to your list of dependencies in `mix.exs`:
 
 ```elixir
-def deps do
-  [
-    {:lambda_base, "~> 1.2.0"}
-  ]
-end
-```
-
-If you run Lambda as application, you must add below.
-
-```elixir
-def project do
-  [
-    boot_mode: :app
-  ]
-end
-
 def application do
   [
     mod: {LambdaBase.Application, []}
   ]
 end
-```
 
-If you run Lambda on Amazon Linux 2, you must add below.
-
-```elixir
-def project do
+def deps do
   [
-    custom_runtime: :amazon_linux2
+    {:lambda_base, "~> 1.3.0"}
   ]
 end
 ```
@@ -61,15 +41,6 @@ end
 
 2. Create zip file for AWS Lambda.
 
-custom runtime on Amazon Linux
-```
-$ docker run -d -it --rm --name elx erintheblack/elixir-lambda-builder:1.10.0
-$ docker cp ${project} elx:/tmp
-$ docker exec elx /bin/bash -c "cd /tmp/${project}; mix deps.get; MIX_ENV=prod mix lambda.release"
-$ docker cp elx:/tmp/${app_name}-${version}.zip .
-```
-
-custom runtime on Amazon Linux 2
 ```
 $ docker run -d -it --rm --name elx erintheblack/elixir-lambda-builder:al2_1.10.4
 $ docker cp ${project} elx:/tmp

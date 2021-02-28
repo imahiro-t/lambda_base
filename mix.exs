@@ -4,7 +4,7 @@ defmodule LambdaBase.MixProject do
   def project do
     [
       app: :lambda_base,
-      version: "1.2.0",
+      version: "1.3.0",
       elixir: "~> 1.9",
       name: "LambdaBase",
       description: description(),
@@ -42,7 +42,7 @@ defmodule LambdaBase.MixProject do
     [
       {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
       {:httpoison, "~> 1.7.0"},
-      {:jason, "~> 1.1"}
+      {:jason, "~> 1.2"}
     ]
   end
 end
