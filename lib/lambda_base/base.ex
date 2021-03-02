@@ -3,6 +3,14 @@ defmodule LambdaBase.Base do
   alias LambdaBase.Util.LambdaLogger
 
   @doc """
+  Init lambdas.
+  """
+  def init(context) do
+    Module.concat([Elixir, context |> handler])
+    |> apply(:init, [context])
+  end
+
+  @doc """
   Loop and handle lambdas.
   """
   def loop(context) do
