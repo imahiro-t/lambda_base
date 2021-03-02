@@ -14,9 +14,14 @@ defmodule LambdaBase.BaseTask do
   """
   def run(context) do
     if (context |> Map.has_key?("AWS_LAMBDA_RUNTIME_API")) do
-      LambdaBase.Base.loop(context)
+      case context |> LambdaBase.Base.init() do
+        {:ok, context} ->
+          LambdaBase.Base.loop(context)
+        _ ->
+          :halt
+      end
     else
-      :ok
+      :halt
     end
   end
 

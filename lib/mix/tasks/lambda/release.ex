@@ -33,7 +33,7 @@ defmodule Mix.Tasks.Lambda.Release do
     bootstrap = bootstrap(app_name)
     env = Mix.env
     Mix.Shell.cmd("rm -f -R ./_build/#{env}/*", &IO.puts/1)
-    Mix.Shell.cmd("MIX_ENV=#{env} mix release", &IO.puts/1)
+    Mix.Shell.cmd("MIX_ENV=#{env} mix release --quiet", &IO.puts/1)
     File.write("./_build/#{env}/rel/#{app_name}/bootstrap", bootstrap)
     Mix.Shell.cmd("chmod +x ./_build/#{env}/rel/#{app_name}/bin/#{app_name}", &IO.puts/1)
     Mix.Shell.cmd("chmod +x ./_build/#{env}/rel/#{app_name}/releases/*/elixir", &IO.puts/1)
