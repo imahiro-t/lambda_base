@@ -13,4 +13,10 @@ defmodule LambdaBase do
   Lambda runtime call handle function.
   """
   @callback handle(event :: map(), context :: map()) :: {:ok, String.t} | {:error, String.t}
+
+  defmacro __using__(_opts) do
+    quote do
+      @behaviour LambdaBase
+    end
+  end
 end

@@ -15,7 +15,7 @@ end
 
 def deps do
   [
-    {:lambda_base, "~> 1.3.0"}
+    {:lambda_base, "~> 1.3.1"}
   ]
 end
 ```
