@@ -32,22 +32,42 @@ defmodule LambdaBase.Util.LambdaLogger do
   @doc """
   Log Debug.
   """
-  def debug(message), do: if log?(:debug), do: log("[DEBUG] #{message |> log_message}")
+  def debug(message) do
+    if log?(:debug) do
+      log("[DEBUG] #{message |> log_message}")
+    end
+    message
+  end
 
   @doc """
   Log Information.
   """
-  def info(message), do: if log?(:info), do: log("[INFO] #{message |> log_message}")
+  def info(message) do
+    if log?(:info) do
+      log("[INFO] #{message |> log_message}")
+    end
+    message
+  end
 
   @doc """
   Log Warning.
   """
-  def warn(message), do: if log?(:warn), do: log("[WARN] #{message |> log_message}")
+  def warn(message) do
+    if log?(:warn) do
+      log("[WARN] #{message |> log_message}")
+    end
+    message
+  end
 
   @doc """
   Log Error.
   """
-  def error(message), do: if log?(:error), do: log("[ERROR] #{message |> log_message}")
+  def error(message) do
+    if log?(:error) do
+      log("[ERROR] #{message |> log_message}")
+    end
+    message
+  end
 
   defp log_message(message) when is_binary(message), do: message
   defp log_message(message), do: inspect(message)
