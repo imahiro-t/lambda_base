@@ -10,9 +10,11 @@ defmodule Mix.Tasks.Lambda.Release do
 
   ```
   $ docker run -d -it --rm --name elx erintheblack/elixir-lambda-builder:al2_1.10.4
-  $ docker cp ${project} elx:/tmp
-  $ docker exec elx /bin/bash -c "cd /tmp/${project}; mix deps.get; MIX_ENV=prod mix lambda.release"
+  $ docker cp mix.exs elx:/tmp
+  $ docker cp lib elx:/tmp
+  $ docker exec elx /bin/bash -c "mix deps.get; MIX_ENV=prod mix lambda.release"
   $ docker cp elx:/tmp/${app_name}-${version}.zip .
+  $ docker stop elx
   ```
 
   ## Lambda setting
@@ -41,8 +43,10 @@ defmodule Mix.Tasks.Lambda.Release do
     Mix.Shell.cmd("chmod +x ./_build/#{env}/rel/#{app_name}/bootstrap", &IO.puts/1)
     Mix.Shell.cmd("cp -a /usr/lib64/libtinfo.so.6.0 ./_build/#{env}/rel/#{app_name}/lib/libtinfo.so.6", &IO.puts/1)
     Mix.Shell.cmd("cd ./_build/#{env}/rel/#{app_name}; zip #{app_name}-#{version}.zip -r -q *", &IO.puts/1)
-    Mix.Shell.cmd("mv -f ./_build/#{env}/rel/#{app_name}/#{app_name}-#{version}.zip ../", &IO.puts/1)
-    Mix.Shell.cmd("cp -a ../#{app_name}-#{version}.zip ../#{app_name}.zip", &IO.puts/1)
+    Mix.Shell.cmd("mv -f ./_build/#{env}/rel/#{app_name}/#{app_name}-#{version}.zip ./", &IO.puts/1)
+    Mix.Shell.cmd("cp -a ./#{app_name}-#{version}.zip ./#{app_name}.zip", &IO.puts/1)
+    Mix.Shell.cmd("cp -a ./#{app_name}-#{version}.zip ../", &IO.puts/1)
+    Mix.Shell.cmd("cp -a ./#{app_name}.zip ../", &IO.puts/1)
   end
 
   defp app_name do

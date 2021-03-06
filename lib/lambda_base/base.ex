@@ -1,6 +1,6 @@
 defmodule LambdaBase.Base do
 
-  alias LambdaBase.Util.LambdaLogger
+  alias LambdaBase.Logger
 
   @doc """
   Init lambdas.
@@ -31,24 +31,24 @@ defmodule LambdaBase.Base do
   end
 
   defp handle_event(event, context, request_id) do
-    LambdaLogger.debug(event)
-    LambdaLogger.debug(context)
-    LambdaLogger.debug(request_id)
+    Logger.debug(event)
+    Logger.debug(context)
+    Logger.debug(request_id)
     try do
       module = Module.concat([Elixir, context |> handler])
       case apply(module, :handle, [event, context]) do
         {:ok, result} ->
-          LambdaLogger.debug(result)
+          Logger.debug(result)
           endpoint_uri = context |> response_uri(request_id)
           HTTPoison.post(endpoint_uri, result)
         {:error, error} ->
-          LambdaLogger.error(error)
+          Logger.error(error)
           endpoint_uri = context |> error_uri(request_id)
           HTTPoison.post(endpoint_uri, error |> error_message |> Jason.encode!)
       end
     rescue
       exception ->
-        LambdaLogger.error(exception)
+        Logger.error(exception)
         endpoint_uri = context |> error_uri(request_id)
         HTTPoison.post(endpoint_uri, exception |> exception_message |> Jason.encode!)
     end

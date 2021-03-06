@@ -15,7 +15,7 @@ end
 
 def deps do
   [
-    {:lambda_base, "~> 1.3.3"}
+    {:lambda_base, "~> 1.3.4"}
   ]
 end
 ```
@@ -43,9 +43,11 @@ end
 
 ```
 $ docker run -d -it --rm --name elx erintheblack/elixir-lambda-builder:al2_1.10.4
-$ docker cp ${project} elx:/tmp
-$ docker exec elx /bin/bash -c "cd /tmp/${project}; mix deps.get; MIX_ENV=prod mix lambda.release"
+$ docker cp mix.exs elx:/tmp
+$ docker cp lib elx:/tmp
+$ docker exec elx /bin/bash -c "mix deps.get; MIX_ENV=prod mix lambda.release"
 $ docker cp elx:/tmp/${app_name}-${version}.zip .
+$ docker stop elx
 ```
 
 3. Upload zip file and set configuration.
